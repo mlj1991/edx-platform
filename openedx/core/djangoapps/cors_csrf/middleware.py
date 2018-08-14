@@ -66,10 +66,11 @@ class CorsCSRFMiddleware(CsrfViewMiddleware):
     def process_view(self, request, callback, callback_args, callback_kwargs):
         """Skip the usual CSRF referer check if this is an allowed cross-domain request. """
         if not is_cross_domain_request_allowed(request):
-            log.debug("Could not disable CSRF middleware referer check for cross-domain request.")
+            log.info("Could not disable CSRF middleware referer check for cross-domain request.")
             return
 
         with skip_cross_domain_referer_check(request):
+            log.info("**** Calling CsrfViewMiddleware with referer check disabled. ****")
             return super(CorsCSRFMiddleware, self).process_view(request, callback, callback_args, callback_kwargs)
 
 
@@ -112,7 +113,7 @@ class CsrfCrossDomainCookieMiddleware(object):
 
         # Check whether this is a secure request from a domain on our whitelist.
         if not is_cross_domain_request_allowed(request):
-            log.debug("Could not set cross-domain CSRF cookie.")
+            log.info("Could not set cross-domain CSRF cookie.")
             return response
 
         # Check whether (a) the CSRF middleware has already set a cookie, and

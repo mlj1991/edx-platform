@@ -1217,6 +1217,8 @@ CREDIT_NOTIFICATION_CACHE_TIMEOUT = 5 * 60 * 60
 MIDDLEWARE_CLASSES = [
     'crum.CurrentRequestUserMiddleware',
 
+    'openedx.core.djangoapps.oauth_dispatch.middleware.JwtAuthCookieMiddleware',
+
     # Clears request cache. This is a safer request cache.
     'edx_django_utils.cache.middleware.RequestCacheMiddleware',
 
@@ -2312,6 +2314,9 @@ CSRF_COOKIE_AGE = 60 * 60 * 24 * 7 * 52
 # It is highly recommended that you override this in any environment accessed by
 # end users
 CSRF_COOKIE_SECURE = False
+CSRF_TRUSTED_ORIGINS = [
+    '.edx.org',
+]
 
 ######################### Django Rest Framework ########################
 
@@ -3182,6 +3187,11 @@ JWT_AUTH = {
 
     'JWT_ISSUER': 'change-me',
     'JWT_AUDIENCE': 'change-me',
+
+    'JWT_AUTH_COOKIE': 'edx-jwt-cookie',
+    'JWT_AUTH_COOKIE_HEADER_PAYLOAD': 'edx-jwt-cookie-header-payload',
+    'JWT_AUTH_COOKIE_SIGNATURE': 'edx-jwt-cookie-signature',
+    'JWT_AUTH_COOKIE_EXPIRATION': 300,  # in seconds
 }
 
 ################################ Settings for Microsites ################################
