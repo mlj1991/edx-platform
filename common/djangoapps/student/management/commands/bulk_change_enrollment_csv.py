@@ -57,12 +57,12 @@ class Command(BaseCommand):
                 try:
                     course_key = CourseKey.from_string(row['course_id'])
                 except InvalidKeyError:
-                    raise CommandError('Invalid or non-existant course id {}'.format(row['course_id']))
+                    logger.warning('Invalid or non-existent course id {}'.format(row['course_id']))
 
                 try:
                     user = User.objects.get(username=row['user'])
                 except:
-                    raise CommandError('Invalid or non-existant user {}'.format(row['user']))
+                    logger.warning('Invalid or non-existent user {}'.format(row['user']))
 
                 try:
                     course_enrollment = CourseEnrollment.get_enrollment(user, course_key)
@@ -111,3 +111,4 @@ class Command(BaseCommand):
                 except Exception as e:
                     logger.info("Unable to update student [%s] course [%s] enrollment to mode [%s] "
                                 "because of Exception [%s]", user.username, course_key, row['mode'], repr(e))
+            logger.info("Done.")
