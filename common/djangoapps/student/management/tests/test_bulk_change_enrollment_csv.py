@@ -1,4 +1,5 @@
 from tempfile import NamedTemporaryFile
+import unittest
 
 from django.conf import settings
 from django.core.management import call_command
@@ -84,7 +85,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
     def test_already_enrolled_student(self):
         """ Verify in case if a user is already enrolled warning is logged."""
         with NamedTemporaryFile() as csv:
-            csv = self.__write_test_csv(csv, lines=str(self.courses[0].id)+",amy,audit\n")
+            csv = self.__write_test_csv(csv, lines=str(self.courses[0].id) + ",amy,audit\n")
 
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
@@ -119,5 +120,3 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
         for enrollment in CourseEnrollment.objects.all():
             self.assertEqual(enrollment.is_active, True)
             self.assertEqual(enrollment.mode, CourseMode.VERIFIED)
-
-
