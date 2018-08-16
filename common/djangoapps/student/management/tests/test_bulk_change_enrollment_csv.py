@@ -50,7 +50,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
     def test_user_not_exist(self):
         """Verify that warning is logged for non existing user."""
         with NamedTemporaryFile() as csv:
-            csv = self._write_test_csv(csv, lines="course-v1:edX+DemoX+Demo_Course,user,audit\n")
+            csv = self.__write_test_csv(csv, lines="course-v1:edX+DemoX+Demo_Course,user,audit\n")
 
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
@@ -65,7 +65,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
     def test_invalid_course_key(self):
         """Verify in case of invalid course key warning is logged."""
         with NamedTemporaryFile() as csv:
-            csv = self._write_test_csv(csv, lines="Demo_Course,river,audit\n")
+            csv = self.__write_test_csv(csv, lines="Demo_Course,river,audit\n")
 
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
@@ -80,7 +80,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
     def test_already_enrolled_student(self):
         """ Verify in case if a user is already enrolled warning is logged."""
         with NamedTemporaryFile() as csv:
-            csv = self._write_test_csv(csv, lines=str(self.course.id)+",amy,audit\n")
+            csv = self.__write_test_csv(csv, lines=str(self.course.id)+",amy,audit\n")
 
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
@@ -101,7 +101,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
                  for enrollment in self.enrollments)
 
         with NamedTemporaryFile() as csv:
-            csv = self._write_test_csv(csv, lines=lines)
+            csv = self.__write_test_csv(csv, lines=lines)
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
                 log.check(
