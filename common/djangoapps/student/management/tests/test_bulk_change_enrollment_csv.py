@@ -1,5 +1,6 @@
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.core.management import call_command
 from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory
@@ -8,7 +9,7 @@ from testfixtures import LogCapture
 from course_modes.tests.factories import CourseModeFactory
 from course_modes.models import CourseMode
 from student.tests.factories import UserFactory
-from student.models import CourseEnrollment, User
+from student.models import CourseEnrollment
 
 
 LOGGER_NAME = 'student.management.commands.bulk_unenroll'
@@ -47,6 +48,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
         csv.seek(0)
         return csv
 
+    @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
     def test_user_not_exist(self):
         """Verify that warning is logged for non existing user."""
         with NamedTemporaryFile() as csv:
@@ -62,6 +64,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
                     )
                 )
 
+    @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
     def test_invalid_course_key(self):
         """Verify in case of invalid course key warning is logged."""
         with NamedTemporaryFile() as csv:
@@ -77,10 +80,11 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
                     )
                 )
 
+    @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
     def test_already_enrolled_student(self):
         """ Verify in case if a user is already enrolled warning is logged."""
         with NamedTemporaryFile() as csv:
-            csv = self.__write_test_csv(csv, lines=str(self.course.id)+",amy,audit\n")
+            csv = self.__write_test_csv(csv, lines=str(self.courses[0].id)+",amy,audit\n")
 
             with LogCapture(LOGGER_NAME) as log:
                 call_command("bulk_change_enrollment_csv", "--csv_file_path={}".format(csv.name))
@@ -95,6 +99,7 @@ class BulkChangeEnrollmentCSVTests(SharedModuleStoreTestCase):
                     )
                 )
 
+    @unittest.skipUnless(settings.ROOT_URLCONF == 'lms.urls', 'Test only valid in lms')
     def test_bulk_enrollment(self):
         """ Test all users are enrolled using the command."""
         lines = (str(enrollment.course.id) + "," + str(enrollment.user.id) + ",verified\n"

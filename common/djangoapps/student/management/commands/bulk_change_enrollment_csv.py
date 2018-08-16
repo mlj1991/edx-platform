@@ -110,5 +110,5 @@ class Command(BaseCommand):
 
                 except Exception as e:
                     logger.info("Unable to update student [%s] course [%s] enrollment to mode [%s] "
-                                "because of Exception [%s]", user.username, course_key, row['mode'], repr(e))
+                                "because of Exception [%s]", row['user'], row['course_id'], row['mode'], repr(e))
             logger.info("Done.")
